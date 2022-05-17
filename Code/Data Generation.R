@@ -1,5 +1,5 @@
 # set working directory
-setwd("C:/Users/lucas/Documents/Facc/Analyse Multivariée/Travail Individuel/Multivariate-Analysis-Project/Code")
+setwd(dir="C:/Users/lucas/Documents/Facc/Analyse Multivariée/Travail Individuel/Multivariate-Analysis-Project/Code")
 
 # clearing the environment and the console
 rm(list=ls())
