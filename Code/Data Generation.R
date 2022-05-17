@@ -26,8 +26,8 @@ X1 <- rmsn(n, xi=mu_X1, Omega, alpha)
 X2 <- rmsn(n, xi=mu_X2, Omega, alpha)
 
 # 1.b)
-outliers_percentage = 0.1
-outliers_number = n*outliers_percentage
+outliers_percentage <- 0.1
+outliers_number <- n*outliers_percentage
 X1_outliers <- X1
 X1_outliers[1:outliers_number,] <- mvrnorm(n=outliers_number, mu=c(-2.5, -2.5), 0.2*diag(p))
 
