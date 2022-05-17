@@ -1,5 +1,5 @@
 # set working directory
-setwd("C:/Users/lucas/Documents/Facc/Analyse Multivariée/Travail Individuel/Multivariate-Analysis-Project")
+setwd("C:/Users/lucas/Documents/Facc/Analyse Multivariée/Travail Individuel/Multivariate-Analysis-Project/Code")
 
 # clearing the environment and the console
 rm(list=ls())
@@ -10,30 +10,25 @@ library(MASS)
 
 # Multivariate Skew-Normal Distribution
 # install.packages("sn")
-# library(sn)
+library(sn)
 
-# low dimension data (p <= 10)
+# LOW DIMENSION DATA (p <= 10)
 # ----------------------------
 
 # 1.a)
-# X1
-p = 2
+p <- 2
+n <- 250 # n_1 = n_2 = 250
+Omega <- diag(p)
+alpha <- c(5,5)
+mu_X1 <- c(0,0)
+mu_X2 <- c(2,2)
+X1 <- rmsn(n, xi=mu_X1, Omega, alpha)
+X2 <- rmsn(n, xi=mu_X2, Omega, alpha)
 
-n = 250 # n_1 = n_2 = 250
+# 1.b)
+outliers_percentage = 0.1
+outliers_number = n*outliers_percentage
+X1_outliers <- X1
+X1_outliers[1:outliers_number,] <- mvrnorm(n=outliers_number, mu=c(-2.5, -2.5), 0.2*diag(p))
 
-Omega_tild = diag(1,p)
-
-alpha = matrix(5, p, 1)
-
-mu = matrix(0, p, 1)
-
-delta = sqrt(1+t(alpha) %*% Omega_tild %*% alpha)
-delta = (Omega_tild %*% alpha) / delta[1]
-
-mu_z = delta*sqrt(2/pi)
-
-cov_Z = Omega_tild - mu_z %*% t(mu_z)
-
-phi_p=mvrnorm(n, mu=mu_z, Sigma=cov_Z)
-
-# X2
+save(X1, X2, X1_outliers, file="../Data/Low Dimension Data/Case 1.R")
