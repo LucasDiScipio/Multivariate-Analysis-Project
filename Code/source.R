@@ -108,7 +108,7 @@ medcouple <- function(X, med){
 
 
 adjusted_outlyingness_univariate <- function(x, X, med, MC){
-# ------------------------------------------------
+# -----------------------------------------------------------
 # COMPUTES THE UNIVARIATE ADJUSTED OUTLYINGNESS 
 # 
 # INPUTS:
@@ -118,8 +118,8 @@ adjusted_outlyingness_univariate <- function(x, X, med, MC){
 # MC: the medcouple of the dataset
 #
 # OUTPUTS:
-# the adjusted outlyingness of x with respect to X
-# ------------------------------------------------
+# the univariate adjusted outlyingness of x with respect to X
+# -----------------------------------------------------------
   
   # If MC < 0, the AO is computed on the inverted dataset
   if (MC < 0) X <- -X
@@ -137,6 +137,36 @@ adjusted_outlyingness_univariate <- function(x, X, med, MC){
     Q_1 <- unname(quantile(X, probs=.25))          
     c_1 <- min(subset(X, X > Q_1-1.5*exp(-4*MC)*IQR))
     return( (med-x)/(med-c_1) )
+    
+  }
+  
+}
+
+
+adjusted_outlyingness_multivariate <- function(X, m){
+# -------------------------------------------------------------
+# COMPUTES THE MULTIVARIATE ADJUSTED OUTLYINGNESS 
+# 
+# INPUTS:
+# M: the number of direction considered
+# X: the dataset
+#
+# OUTPUTS:
+# the multivariate adjusted outlyingness of x with respect to X
+# -------------------------------------------------------------
+  
+  # random directions & projected data
+  a <- new_direction(X1, p)
+  proj_X1 <- X1 %*% a
+  
+  # medcouple & adjusted outlyingness
+  med_proj_X1 <- median(proj_X1)
+  MC <- medcouple(proj_X1, med_proj_X1)
+  
+  AO <- c(rep(0, n));
+  for (i in 1:dim(proj_X1)[1]) {
+    
+    AO[i] <- adjusted_outlyingness_univariate(proj_X1[i], proj_X1, med_proj_X1, MC)  
     
   }
   
