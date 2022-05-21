@@ -29,12 +29,12 @@ Nullspace <- function (A) {
 }
 
 
-new_direction <- function(Xj,p){
+new_direction <- function(X, p){
 # ------------------------------------
 # GENERATES NEW RANDOM DIRECTION
 # 
 # INPUTS:
-# the dataset (n by p matrix)
+# X: the dataset (n by p matrix)
 # p: the dimension of the dataset
 #
 # OUTPUTS:
@@ -42,7 +42,7 @@ new_direction <- function(Xj,p){
 # ------------------------------------
     
   # randomly draw p observations from the dataset
-  samples <- Xj[sample(nrow(Xj), p),]
+  samples <- X[sample(nrow(X), p),]
   
   # vector(s) between p observations
   vectors <- samples[1,] - samples[2,]
@@ -55,50 +55,49 @@ new_direction <- function(Xj,p){
 }
 
 
-h <- function(med_Xj, x_i, x_l) {
+h <- function(med, x_i, x_l) {
 # ----------------------------------------
 # COMPUTES THE h() KERNEL OF THE MEDCOUPLE
 # 
 # INPUTS:
-# med_Xj: the sample median 
-# x_i & x_j: observations from the Xj group 
+# med: the median of the dataset 
+# x_i & x_l: observations from the dataset 
 #
 # OUTPUTS:
 # the kernel of the medcouple
 # ----------------------------------------
   
-  return( (x_l-med_Xj - med_Xj-x_i)/(x_l-x_i) )
+  return( (x_l-med - med-x_i)/(x_l-x_i) )
 }
 
 
-medcouple <- function(Xj){
+medcouple <- function(X, med){
 # ----------------------
 # COMPUTES THE MEDCOUPLE
 # 
 # INPUTS:
-# Xj: the dataset (n by p matrix) 
+# X: the dataset
+# med: the median of the dataset
 #
 # OUTPUTS:
 # the medcouple
 # ----------------------
   
-  med_Xj <- median(Xj)
-  
   H <- vector("numeric", 0)
   
-  for (i in 1:dim(Xj)[1]){
+  for (i in 1:dim(X)[1]){
     
-    for (j in 1:dim(Xj)[1]){
+    for (j in 1:dim(X)[1]){
 
-      if( Xj[i] < med_Xj & med_Xj < Xj[j] ){
+      if( X[i] < med & med < X[j] ){
         
-        H <- append(H, h(med_Xj, Xj[i], Xj[j]))
+        H <- append(H, h(med, X[i], X[j]))
         
       } 
       
-      else if ( Xj[j] < med_Xj & med_Xj < Xj[i] ) {
+      else if ( X[j] < med & med < X[i] ) {
         
-        H <- append(H, h(med_Xj, Xj[j], Xj[i]))
+        H <- append(H, h(med, X[j], X[i]))
         
       }
     }
@@ -108,6 +107,38 @@ medcouple <- function(Xj){
 }
 
 
+adjusted_outlyingness <- function(x, X, med, MC){
+# ----------------------
+# COMPUTES THE UNIVARIATE ADJUSTED OUTLYINGNESS 
+# 
+# INPUTS:
+# x: an observation from the dataset
+# X: the dataset
+# med: the median of the dataset
+# MC: the medcouple of the dataset
+#
+# OUTPUTS:
+# the adjusted outlyingness
+# ----------------------
+
+  Q_1 <- unname(quantile(X, probs=.25))
+  Q_3 <- unname(quantile(X, probs=.75))
+  IQR <- IQR(X)
+  
+  if (x >= med) {
+    
+    c_2 <- max(subset(X, X < Q_3+1.5*exp(3*MC)*IQR))
+    AO <- (x-med)/(c_2-med)
+    
+  } else {
+    
+    c_1 <- min(subset(X, X > Q_1-1.5*exp(-4*MC)*IQR))
+    AO <- (med-x)/(med-c_1)
+    
+  }
+  
+  return(AO)
+}
 
 
 
