@@ -108,7 +108,7 @@ medcouple <- function(X, med){
 
 
 adjusted_outlyingness <- function(x, X, med, MC){
-# ----------------------
+# ------------------------------------------------
 # COMPUTES THE UNIVARIATE ADJUSTED OUTLYINGNESS 
 # 
 # INPUTS:
@@ -118,8 +118,8 @@ adjusted_outlyingness <- function(x, X, med, MC){
 # MC: the medcouple of the dataset
 #
 # OUTPUTS:
-# the adjusted outlyingness
-# ----------------------
+# the adjusted outlyingness of x with respect to X
+# ------------------------------------------------
 
   Q_1 <- unname(quantile(X, probs=.25))
   Q_3 <- unname(quantile(X, probs=.75))
