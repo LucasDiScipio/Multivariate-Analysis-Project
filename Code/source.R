@@ -121,36 +121,23 @@ adjusted_outlyingness <- function(x, X, med, MC){
 # the adjusted outlyingness of x with respect to X
 # ------------------------------------------------
   
-  # If MC < 0, the AO is computed on the inverted dataset: -X
+  # If MC < 0, the AO is computed on the inverted dataset
   if (MC < 0) X <- -X
   
-  Q_1 <- unname(quantile(X, probs=.25))
-  Q_3 <- unname(quantile(X, probs=.75))
   IQR <- IQR(X)
   
   if (x >= med) {
-    
+
+    Q_3 <- unname(quantile(X, probs=.75))
     c_2 <- max(subset(X, X < Q_3+1.5*exp(3*MC)*IQR))
-    AO <- (x-med)/(c_2-med)
+    return( (x-med)/(c_2-med) )
     
   } else {
-    
+
+    Q_1 <- unname(quantile(X, probs=.25))          
     c_1 <- min(subset(X, X > Q_1-1.5*exp(-4*MC)*IQR))
-    AO <- (med-x)/(med-c_1)
+    return( (med-x)/(med-c_1) )
     
   }
   
-  return(AO)
 }
-
-
-
-
-
-
-
-
-
-
-
-
