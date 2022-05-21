@@ -1,5 +1,5 @@
 # set working directory
-setwd(dir="C:/Users/lucas/Documents/Facc/Analyse MultivariÃ©e/Travail Individuel/Multivariate-Analysis-Project/Code")
+setwd("C:/Users/lucas/Documents/Facc/Analyse Multivariée/Travail Individuel/Multivariate-Analysis-Project/Code")
 
 # clearing the environment and the console
 rm(list=ls())
@@ -12,7 +12,7 @@ library(MASS)
 # install.packages("sn")
 library(sn)
 
-# LOW DIMENSION DATA (p <= 10)
+# LOW DIMENSION DATA (p < 10)
 # ----------------------------
 
 # 1.a)
