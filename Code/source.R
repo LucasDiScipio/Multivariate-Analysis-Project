@@ -30,7 +30,7 @@ Nullspace <- function (A) {
 
 
 new_direction <- function(X, p){
-# ------------------------------------
+# --------------------------------
 # GENERATES NEW RANDOM DIRECTION
 # 
 # INPUTS:
@@ -39,7 +39,7 @@ new_direction <- function(X, p){
 #
 # OUTPUTS:
 # A p by 1 random direction vector 
-# ------------------------------------
+# --------------------------------
     
   # randomly draw p observations from the dataset
   samples <- X[sample(nrow(X), p),]
