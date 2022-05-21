@@ -107,7 +107,7 @@ medcouple <- function(X, med){
 }
 
 
-adjusted_outlyingness <- function(x, X, med, MC){
+adjusted_outlyingness_univariate <- function(x, X, med, MC){
 # ------------------------------------------------
 # COMPUTES THE UNIVARIATE ADJUSTED OUTLYINGNESS 
 # 
