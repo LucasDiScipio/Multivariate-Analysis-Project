@@ -144,30 +144,38 @@ adjusted_outlyingness_univariate <- function(x, X, med, MC){
 
 
 adjusted_outlyingness_multivariate <- function(X, m){
-# -------------------------------------------------------------
+# -----------------------------------------------------------------
 # COMPUTES THE MULTIVARIATE ADJUSTED OUTLYINGNESS 
 # 
 # INPUTS:
-# M: the number of direction considered
 # X: the dataset
+# m: the number of directions considered
 #
 # OUTPUTS:
-# the multivariate adjusted outlyingness of x with respect to X
-# -------------------------------------------------------------
+# the multivariate adjusted outlyingness of the observations from X
+# -----------------------------------------------------------------
+
+  n <- dim(X)[1]
+  AO <- matrix(0, m, n)
   
-  # random directions & projected data
-  a <- new_direction(X1, p)
-  proj_X1 <- X1 %*% a
-  
-  # medcouple & adjusted outlyingness
-  med_proj_X1 <- median(proj_X1)
-  MC <- medcouple(proj_X1, med_proj_X1)
-  
-  AO <- c(rep(0, n));
-  for (i in 1:dim(proj_X1)[1]) {
+  for (i in 1:m){
     
-    AO[i] <- adjusted_outlyingness_univariate(proj_X1[i], proj_X1, med_proj_X1, MC)  
+    # random directions & projected data
+    a <- new_direction(X, p)
+    proj_X <- X %*% a
     
+    # medcouple & adjusted outlyingness
+    med_proj_X <- median(proj_X)
+    MC <- medcouple(proj_X, med_proj_X)
+    for (j in 1:n) AO[i,j] <- adjusted_outlyingness_univariate(proj_X[j], proj_X, med_proj_X, MC)
+
+    print(i)
   }
   
+  # sup adjusted outlyingness for each observation
+  max_AO <- matrix(0, nrow=1, ncol=n)
+  for (i in 1:n)  max_AO[i] <- max(AO[,i])
+    
+  return(max_AO)
 }
+
