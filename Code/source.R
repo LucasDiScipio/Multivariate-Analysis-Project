@@ -71,23 +71,24 @@ h <- function(med, x_i, x_l) {
 }
 
 
-medcouple <- function(X, med){
-# ----------------------
+medcouple <- function(X, med, n){
+# ----------------------------------------
 # COMPUTES THE MEDCOUPLE
 # 
 # INPUTS:
 # X: the dataset
 # med: the median of the dataset
+# n: the number of elements of the dataset
 #
 # OUTPUTS:
 # the medcouple
-# ----------------------
+# ----------------------------------------
   
   H <- vector("numeric", 0)
   
-  for (i in 1:dim(X)[1]){
+  for (i in 1:n){
     
-    for (j in 1:dim(X)[1]){
+    for (j in 1:n){
 
       if( X[i] < med & med < X[j] ){
         
@@ -149,7 +150,7 @@ adjusted_outlyingness_multivariate <- function(X, m){
 # 
 # INPUTS:
 # X: the dataset
-# m: the number of directions considered
+# m: the number of directions to be considered
 #
 # OUTPUTS:
 # the multivariate adjusted outlyingness of the observations from X
@@ -166,16 +167,53 @@ adjusted_outlyingness_multivariate <- function(X, m){
     
     # medcouple & adjusted outlyingness
     med_proj_X <- median(proj_X)
-    MC <- medcouple(proj_X, med_proj_X)
+    MC <- medcouple(proj_X, med_proj_X, n)
     for (j in 1:n) AO[i,j] <- adjusted_outlyingness_univariate(proj_X[j], proj_X, med_proj_X, MC)
 
     print(i)
   }
   
-  # sup adjusted outlyingness for each observation
-  max_AO <- matrix(0, nrow=1, ncol=n)
+  # sup of the m AOs for each observation
+  max_AO <- matrix(0, nrow=n, ncol=1)
   for (i in 1:n)  max_AO[i] <- max(AO[,i])
     
   return(max_AO)
 }
+
+
+outlier_score <- function(AO, n){
+# ----------------------------------
+# COMPUTES THE OUTLIER SCORES
+# 
+# INPUTS:
+# AO: the set of AOs
+# n: the number of AOs
+#
+# OUTPUTS:
+# OS: the outlier scores for each AO
+# ----------------------------------
+
+  med <- median(AO)
+  MC <- medcouple(AO, med, n)
+  
+  OS <- matrix(0, nrow=n, ncol=1)
+  for(i in 1:n)  OS[i] <- adjusted_outlyingness_univariate(AO[i], AO, med, MC)
+  
+  return(OS)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
