@@ -150,7 +150,7 @@ adjusted_outlyingness_multivariate <- function(X, m){
 # 
 # INPUTS:
 # X: the dataset
-# m: the number of directions to be considered
+# m: the number of projection directions to be considered
 #
 # OUTPUTS:
 # the multivariate adjusted outlyingness of the observations from X
@@ -203,7 +203,34 @@ outlier_score <- function(AO, n){
 }
 
 
+remove_outliers <- function(X, m, n){
+# -------------------------------------------------------
+# REMOVES THE OUTLIERS FROM THE DATASET
+# 
+# INPUTS:
+# X: the dataset
+# m: the number of projection directions to be considered
+# n: the number of elements of the dataset
+#
+# OUTPUTS:
+# X_tild: the updated dataset
+# -------------------------------------------------------
+  
+  
+  AO <- adjusted_outlyingness_multivariate(X, m)
+  OS <- outlier_score(AO, n)
 
+  # removing outliers
+  med_AO <- median(AO)
+  X_tild <- X
+  for (i in 1:n){
+    
+    if (AO[i] > med_AO & OS[i] > 1) X_tild <- X_tild[-i,]
+    
+  }
+  
+  return(X_tild)
+}
 
 
 
