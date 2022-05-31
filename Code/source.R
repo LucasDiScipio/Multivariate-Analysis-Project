@@ -71,36 +71,37 @@ h <- function(med, x_i, x_l) {
 }
 
 
-medcouple <- function(X, med, n){
-# ----------------------------------------
+medcouple <- function(X, med){
+# ------------------------------
 # COMPUTES THE MEDCOUPLE
 # 
 # INPUTS:
 # X: the dataset
 # med: the median of the dataset
-# n: the number of elements of the dataset
 #
 # OUTPUTS:
-# the medcouple
-# ----------------------------------------
+# the medcouple of the dataset
+# ------------------------------
   
-  H <- vector("numeric", 0)
+  # sort the dataset
+  X_sorted <- matrix(sort(X), ncol=1)
   
-  for (i in 1:n){
+  # compute the medcouple
+  X_under_median <- matrix(X_sorted[X_sorted < med], ncol=1)
+  X_above_median <- matrix(X_sorted[X_sorted > med], ncol=1)
+  
+  n_1 <- dim(X_under_median)[1]
+  n_2 <- dim(X_above_median)[1]  
+  
+  H <- matrix(0, nrow=n_1*n_2, ncol=1)
+  current_index <- 1
+  for (i in 1:n_1){
     
-    for (j in 1:n){
-
-      if( X[i] < med & med < X[j] ){
-        
-        H <- append(H, h(med, X[i], X[j]))
-        
-      } 
+    for (j in 1:n_2){
       
-      else if ( X[j] < med & med < X[i] ) {
-        
-        H <- append(H, h(med, X[j], X[i]))
-        
-      }
+      H[current_index] <- h(med, X_under_median[i], X_above_median[j])
+      current_index <- current_index + 1
+      
     }
   }
   
@@ -167,7 +168,7 @@ adjusted_outlyingness_multivariate <- function(X, m){
     
     # medcouple & adjusted outlyingness
     med_proj_X <- median(proj_X)
-    MC <- medcouple(proj_X, med_proj_X, n)
+    MC <- medcouple(proj_X, med_proj_X)
     for (j in 1:n) AO[i,j] <- adjusted_outlyingness_univariate(proj_X[j], proj_X, med_proj_X, MC)
 
     print(i)
@@ -194,7 +195,7 @@ outlier_score <- function(AO, n){
 # ----------------------------------
 
   med <- median(AO)
-  MC <- medcouple(AO, med, n)
+  MC <- medcouple(AO, med)
   
   OS <- matrix(0, nrow=n, ncol=1)
   for(i in 1:n)  OS[i] <- adjusted_outlyingness_univariate(AO[i], AO, med, MC)
@@ -215,7 +216,6 @@ remove_outliers <- function(X, m, n){
 # OUTPUTS:
 # X_tild: the updated dataset
 # -------------------------------------------------------
-  
   
   AO <- adjusted_outlyingness_multivariate(X, m)
   OS <- outlier_score(AO, n)
